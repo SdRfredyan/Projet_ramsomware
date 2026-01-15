@@ -9,37 +9,32 @@ Ce projet est réalisé dans le cadre du module **"Malware et sécurité offensi
 > [!CAUTION]
 > **AVERTISSEMENT :** Ce code est destiné à un usage strictement pédagogique en environnement contrôlé. **Ne l'exécutez jamais sur votre machine physique**. Utilisez exclusivement une Machine Virtuelle (VM) isolée.
 
----
+### Objectifs pédagogiques
+* **Comprendre** l'architecture générale d'un ransomware.
+* **Manipuler** les fichiers et répertoires en Python.
+* **Implémenter** un chiffrement réversible simple.
+* **Concevoir** un protocole client/serveur basique.
+* **Structurer** un code de type malware de manière modulaire.
+* **Analyser** les faiblesses d'un ransomware artisanal.
 
-## 📋 Table des Matières
-1. [Contexte et Objectifs](#-contexte-et-objectifs)
-2. [Fonctionnement Technique](#-fonctionnement-technique)
-3. [Installation](#-installation)
-4. [Utilisation](#-utilisation)
-5. [Documentation des Commandes](#-documentation-des-commandes)
-6. [Analyses et Faiblesses](#-analyses-et-faiblesses)
+### Structure du projet
+Le projet est divisé en deux parties :
+1. **Partie 1 – Fonctionnalités de base (obligatoire) :** Implémentées ici.
+2. **Partie 2 – Fonctionnalités bonus :** Logs et authentification ajoutés.
 
----
-
-## 🎯 Contexte et Objectifs
-
-L'objectif principal est de comprendre l'architecture interne d'un malware et les vecteurs de communication entre un client infecté et son serveur de contrôle (C2).
-
-**Compétences travaillées :**
-* **Système :** Manipulation récursive de fichiers et répertoires.
-* **Cryptographie :** Implémentation du chiffrement XOR symétrique.
-* **Réseau :** Développement d'un protocole client/serveur TCP multi-clients.
-* **Sécurité :** Analyse des traces (logs) et gestion d'authentification par token.
+Ce dépôt contient deux fichiers principaux : `client.py` (le malware) et `server.py` (le serveur de contrôle - C2).
 
 ---
 
-## ⚙️ Fonctionnement Technique
+## ⚙️ Principe de Fonctionnement
 
-### Architecture
-Le projet repose sur une architecture **Client/Serveur (C2)** :
-1.  **Le Client (`client.py`)** : Génère une clé unique, chiffre un dossier spécifique et exfiltre les informations vers le serveur.
-2.  **Le Serveur (`server.py`)** : Centralise les clés de déchiffrement et envoie des commandes à distance via une console interactive.
-
+* **Architecture :** Client-serveur TCP (port 4444).
+* **Le client (malware) :** S'exécute sur la "victime" : génère une clé, chiffre un dossier, exfiltre UUID/clé vers le serveur, puis écoute des commandes.
+* **Le serveur (C2) :** Gère les connexions multi-clients (via threads), stocke les infos (JSON), et permet d'envoyer des commandes via une console interactive.
+* **Protocole :** Simple, avec envois de lignes terminées par `\n`. Authentification par token pour les bonus.
+* **Chiffrement :** XOR réversible (appliqué sur fichiers binaires, récursif via `os.walk`).
+* **Persistence :** Clé/UUID stockés en JSON sur le serveur.
+* **Faiblesses :** XOR faible (facile à casser), pas de persistence avancée, pas d'obfuscation, limité à localhost pour tests.
 ### Schéma de Communication
 ```text
 [ Victime (Client) ]                        [ Serveur (C2) ]
