@@ -1,4 +1,4 @@
-# 🛡️ Projet Ransomware Pédagogique en Python
+# 🛡️ Projet Ransomware Pédagogique en Python (Fait par Hugo Le boulanger et Tony Dias)
 
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
 [![Security](https://img.shields.io/badge/Security-Offensive-red.svg)](#)
