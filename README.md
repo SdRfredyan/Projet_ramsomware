@@ -48,3 +48,71 @@ Ce dépôt contient deux fichiers principaux : `client.py` (le malware) et `serv
         |---- RESPONSE (Output, File) ------------>|
 ```
 ## 📁 Fichiers du Projet
+### 1. `client.py` (Le Malware)
+**Description :** Simule le ransomware sur la machine victime.
+* **Génère** une clé aléatoire (A-Z majuscules via `/dev/urandom`).
+* **Récupère** l'UUID de la machine.
+* **Chiffre** récursivement un dossier cible (ex. : `/home/hugo/Documents/MADI/Cible_projet`) avec XOR (réversible).
+* **Se connecte** au serveur, envoie l'UUID + la clé.
+* **Reçoit** un token d'authentification.
+* **Boucle infinie** pour exécuter les commandes reçues (avec vérification du token).
+* **Gère** les erreurs et les logs (bonus).
+* **Dépendances :** Modules standards (`os`, `socket`, `subprocess`, `logging`).
+* **Lancement :** `python3 client.py` (chiffre le dossier, puis écoute).
+
+### 2. `server.py` (Le Serveur de Contrôle - C2)
+**Description :** Gère les clients connectés et envoie des commandes.
+* **Écoute** sur le port 4444, gère le multi-clients via threads.
+* **Reçoit et stocke** l'UUID/clé/token en JSON (`storage.json`).
+* **Génère** un token d'authentification pour chaque client.
+* **Console interactive** pour lister les clients et envoyer des commandes.
+* **Vérifie** l'authentification pour chaque commande envoyée.
+* **Gère** les réponses (output, fichiers, erreurs) et les logs horodatés (bonus).
+* **Dépendances :** Modules standards (`socket`, `threading`, `json`, `os`, `logging`, `secrets`).
+* **Lancement :** `python3 server.py` (démarre l'écoute et la console).
+
+---
+
+## 🛠️ Commandes Possibles (Console C2)
+Après lancement de `server.py`, une console s'affiche (`> prompt`).
+
+### Commandes Générales
+* `quit` : Arrête le serveur.
+* `list` : Liste les UUID enregistrés et connectés.
+
+### Commandes Clients
+**Format :** `send <uuid> <commande> [args]`
+
+| Commande | Usage | Description |
+| :--- | :--- | :--- |
+| **EXEC** | `EXEC <cmd>` | Exécute une commande système (ex. : `ls -l`). |
+| **UPLOAD** | `UPLOAD <path>` | Récupère un fichier du client (sauvegardé en `uploaded_...`). |
+| **DOWNLOAD** | `DOWNLOAD <path>` | Envoie un fichier du serveur vers le client. |
+| **CRYPTO** | `CRYPTO <mode> <path>` | Chiffre/Déchiffre un dossier (mode : `encrypt` ou `decrypt`). |
+
+---
+
+## 🚀 Installation et Utilisation
+1.  **Clone le repo :** `git clone <url-github>`
+2.  **Préparation :** Crée un dossier cible pour les tests (ex. : `/home/hugo/Documents/MADI/Cible_projet` avec des fichiers factices).
+3.  **Lancement Serveur :** `cd server && python3 server.py`
+4.  **Lancement Client :** `cd client && python3 client.py`
+5.  **Interaction :** Utilise la console du serveur pour interagir avec le client.
+6.  **Vérification :** Analyse les logs (`client.log`, `server.log`) et le fichier `storage.json` pour suivre les traces.
+
+**Prérequis :** Python 3, VM Linux (testé sur Debian/Ubuntu).
+
+---
+
+## 📈 Bonus & Analyses
+
+### Bonus Implémentés
+* ✅ **Logs horodatés** (INFO/ERROR) exportés dans des fichiers.
+* ✅ **Authentification par token** généré de manière sécurisée par le serveur.
+* ✅ **Threading** pour la gestion simultanée des clients et de la console.
+
+### Faiblesses et Améliorations Potentielles
+* **Cryptographie :** XOR est faible et facile à casser via analyse fréquentielle.
+* **Réseau :** Limité à localhost pour les tests ; pas de gestion de reconnexion automatique.
+* **Furtivité :** Pas de persistence avancée ni d'obfuscation du code.
+* **Améliorations suggérées :** Ajouter des dossiers dédiés pour les fichiers (exfiltrations), support de l'upload via ICMP (via `scapy`), et gestion multi-fichiers améliorée.
