@@ -4,10 +4,10 @@
 [![Security](https://img.shields.io/badge/Security-Offensive-red.svg)](#)
 [![Educational](https://img.shields.io/badge/Purpose-Educational-green.svg)](#)
 
-Ce projet est réalisé dans le cadre du module **"Malware et sécurité offensive en Python"**. Il simule le comportement d'un ransomware moderne à des fins éducatives.
+Ce projet est réalisé dans le cadre du module **"Introduction a l'écriture d'un malware en Python"**. Il simule le comportement d'un ransomware moderne à des fins éducatives.
 
 > [!CAUTION]
-> **AVERTISSEMENT :** Ce code est destiné à un usage strictement pédagogique en environnement contrôlé. **Ne l'exécutez jamais sur votre machine physique**. Utilisez exclusivement une Machine Virtuelle (VM) isolée.
+> **AVERTISSEMENT :** Ce code est destiné à un usage strictement pédagogique en environnement contrôlé ici sur VM debian. **Ne l'exécutez jamais sur votre machine physique**. Utilisez exclusivement une Machine Virtuelle (VM) isolée.
 
 ### Objectifs pédagogiques
 * **Comprendre** l'architecture générale d'un ransomware.
@@ -46,3 +46,5 @@ Ce dépôt contient deux fichiers principaux : `client.py` (le malware) et `serv
         |<--- COMMAND (EXEC, UPLOAD, CRYPTO...) ---| (Console Admin)
         |                                          |
         |---- RESPONSE (Output, File) ------------>|
+```
+## 📁 Fichiers du Projet
